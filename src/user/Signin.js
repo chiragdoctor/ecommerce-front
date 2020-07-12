@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Layout from '../core/Layout';
 import { Redirect } from 'react-router-dom';
-import { signin } from '../auth';
+import { signin, authenticate } from '../auth';
 const Signin = () => {
   const [values, setValues] = useState({
     email: '',
@@ -26,10 +26,12 @@ const Signin = () => {
           loading: false,
         });
       } else {
-        setValues({
-          ...values,
-          loading: false,
-          redirectToReferrer: true,
+        authenticate(data, () => {
+          setValues({
+            ...values,
+            loading: false,
+            redirectToReferrer: true,
+          });
         });
       }
     });
@@ -41,11 +43,12 @@ const Signin = () => {
     </div>
   );
 
-  const showLoading = () => (
-    <div className='alert alert-info' style={{ display: loading ? '' : 'none' }}>
-      <h2>Loading ...</h2>
-    </div>
-  );
+  const showLoading = () =>
+    loading && (
+      <div className='alert alert-info' style={{ display: loading ? '' : 'none' }}>
+        <h2>Loading ...</h2>
+      </div>
+    );
 
   const redirectUser = () => {
     if (redirectToReferrer) {
@@ -69,7 +72,7 @@ const Signin = () => {
     </form>
   );
   return (
-    <Layout title='Signup Page' description='This is my singup page' className='container col-md-8 offset-md-2'>
+    <Layout title='Signin Page' description='This is my singin page' className='container col-md-8 offset-md-2'>
       {showError()}
       {showLoading()}
       {signUpForm()}
