@@ -59,7 +59,9 @@ const AddCategory = () => {
         </label>
         <input type='text' className='form-control' value={name} autoFocus onChange={handleNameChange} />
       </div>
-      <button className='btn btn-outline-primary'>Create Category</button>
+      <button disabled={!name} className='btn btn-outline-primary'>
+        Create Category
+      </button>
     </form>
   );
 
