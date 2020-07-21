@@ -4,7 +4,7 @@ import Signin from './user/Signin';
 import Signup from './user/Signup';
 import Home from './core/Home';
 import PrivateRoute from './auth/PrivateRoute';
-import Dashboard from './user/UserDashboard';
+import UserDashboard from './user/UserDashboard';
 
 const Routes = () => {
   return (
@@ -13,7 +13,7 @@ const Routes = () => {
         <Route path='/' exact component={Home} />
         <Route path='/signin' exact component={Signin} />
         <Route path='/signup' exact component={Signup} />
-        <PrivateRoute path='/user/dashboard' exact component={Dashboard} />
+        <PrivateRoute path='/user/dashboard' exact component={UserDashboard} />
       </Switch>
     </Router>
   );
