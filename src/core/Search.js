@@ -32,17 +32,19 @@ const Search = () => {
   const searchData = () => {
     console.log(search, category);
     if (search) {
-      list({ search: search || undefined, category: category }).then((response) => {
-        if (response.error) {
-          console.log(response.error);
-        } else {
-          setData({
-            ...data,
-            results: response,
-            searched: true,
-          });
-        }
-      });
+      list({ search: search || undefined, category: category }).then(
+        (response) => {
+          if (response.error) {
+            console.log(response.error);
+          } else {
+            setData({
+              ...data,
+              results: response,
+              searched: true,
+            });
+          }
+        },
+      );
     }
   };
 
@@ -75,7 +77,9 @@ const Search = () => {
         <h2 className='mt-4 mb-4'>{searchMessage(searched, results)}</h2>
         <div className='row'>
           {results.map((product, i) => (
-            <Card key={i} product={product} />
+            <div key={i} className='mb-3'>
+              <Card key={i} product={product} />
+            </div>
           ))}
         </div>
       </div>
@@ -96,7 +100,12 @@ const Search = () => {
               ))}
             </select>
           </div>
-          <input type='search' className='form-control' onChange={handleChange('search')} placeholder='Search by name' />
+          <input
+            type='search'
+            className='form-control'
+            onChange={handleChange('search')}
+            placeholder='Search by name'
+          />
         </div>
         <div className='btn input-group-append' style={{ border: 'none' }}>
           <button className='input-group-text'>Search</button>
