@@ -30,7 +30,7 @@ const Product = (props) => {
   useEffect(() => {
     const productId = props.match.params.productId;
     loadSingleProduct(productId);
-  }, []);
+  }, [props.match.params]);
 
   return (
     <Layout
