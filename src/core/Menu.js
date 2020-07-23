@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import { signout, isAuthenticated } from '../auth';
+import { itemTotal } from './cartHelpers';
 
 const isActive = (history, path) => {
   if (history.location.pathname === path) {
@@ -24,18 +25,42 @@ const Menu = ({ history }) => {
           </Link>
         </li>
         <li className='nav-item'>
-          <Link className='nav-link' style={isActive(history, '/shop')} to='/shop'>
+          <Link
+            className='nav-link'
+            style={isActive(history, '/shop')}
+            to='/shop'
+          >
             Shop
           </Link>
         </li>
         <li className='nav-item'>
+          <Link
+            className='nav-link'
+            style={isActive(history, '/cart')}
+            to='/cart'
+          >
+            Cart{' '}
+            <sup>
+              <small className='cart-badge'>{itemTotal()} </small>
+            </sup>
+          </Link>
+        </li>
+        <li className='nav-item'>
           {isAuthenticated() && isAuthenticated().user.role === 0 && (
-            <Link className='nav-link' style={isActive(history, '/user/dashboard')} to='/user/dashboard'>
+            <Link
+              className='nav-link'
+              style={isActive(history, '/user/dashboard')}
+              to='/user/dashboard'
+            >
               Dashbaord
             </Link>
           )}
           {isAuthenticated() && isAuthenticated().user.role === 1 && (
-            <Link className='nav-link' style={isActive(history, '/admin/dashboard')} to='/admin/dashboard'>
+            <Link
+              className='nav-link'
+              style={isActive(history, '/admin/dashboard')}
+              to='/admin/dashboard'
+            >
               Dashbaord
             </Link>
           )}
@@ -44,12 +69,20 @@ const Menu = ({ history }) => {
         {!isAuthenticated() && (
           <>
             <li className='nav-item'>
-              <Link className='nav-link' style={isActive(history, '/signin')} to='/signin'>
+              <Link
+                className='nav-link'
+                style={isActive(history, '/signin')}
+                to='/signin'
+              >
                 SignIn
               </Link>
             </li>
             <li className='nav-item'>
-              <Link className='nav-link' style={isActive(history, '/signup')} to='/signup'>
+              <Link
+                className='nav-link'
+                style={isActive(history, '/signup')}
+                to='/signup'
+              >
                 SignUp
               </Link>
             </li>

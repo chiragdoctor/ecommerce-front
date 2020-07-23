@@ -5,6 +5,7 @@ import Signup from './user/Signup';
 import Home from './core/Home';
 import Shop from './core/Shop';
 import Product from './core/Product';
+import Cart from './core/Cart';
 import PrivateRoute from './auth/PrivateRoute';
 import AdminRoute from './auth/AdminRoute';
 import UserDashboard from './user/UserDashboard';
@@ -21,6 +22,7 @@ const Routes = () => {
         <Route path='/signin' exact component={Signin} />
         <Route path='/signup' exact component={Signup} />
         <Route path='/product/:productId' exact component={Product} />
+        <Route path='/cart' exact component={Cart} />
         <PrivateRoute path='/user/dashboard' exact component={UserDashboard} />
         <AdminRoute path='/admin/dashboard' exact component={AdminDashboard} />
         <AdminRoute path='/create/category' exact component={AddCategory} />
