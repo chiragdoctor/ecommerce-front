@@ -3,9 +3,10 @@ import React, { useState, useEffect } from 'react';
 import DropIn from 'braintree-web-drop-in-react';
 import { Link } from 'react-router-dom';
 import { isAuthenticated } from '../auth';
-import { getBraintreeClientToken } from './apiCore';
+import { getBraintreeClientToken, processPayment } from './apiCore';
+import { emptyCart } from './cartHelpers';
 
-const Checkout = ({ products }) => {
+const Checkout = ({ products, setRun = (f) => f, run = undefined }) => {
   const [data, setData] = useState({
     success: false,
     clientToken: null,
@@ -26,9 +27,7 @@ const Checkout = ({ products }) => {
         });
       } else {
         setData({
-          ...data,
           clientToken: data.clientToken,
-          success: true,
         });
       }
     });
@@ -64,14 +63,26 @@ const Checkout = ({ products }) => {
         // Once you have nonce (card type, card number) send nonce as 'paymentMethodNonce'
         // and also total to be charged
         nonce = data.nonce;
-        console.log(
-          'send nonce and total to process',
-          nonce,
-          getTotal(products),
-        );
+        const paymentData = {
+          paymentMethodNonce: nonce,
+          amount: getTotal(products),
+        };
+        processPayment(userId, token, paymentData)
+          .then((response) => {
+            setData({
+              ...data,
+              success: response.success,
+            });
+            // empty cart
+            emptyCart(() => {
+              console.log('payment success and empty cart');
+              setRun(true);
+            });
+            // create order
+          })
+          .catch((error) => console.log(error));
       })
       .catch((error) => {
-        console.log('dropin error: ', error);
         setData({
           ...data,
           error: error.message,
@@ -80,7 +91,7 @@ const Checkout = ({ products }) => {
   };
 
   const showDropIn = () => (
-    <div onBlur={() => setData({...data, error: ''})}>
+    <div onBlur={() => setData({ ...data, error: '' })}>
       {data.clientToken !== null && products.length > 0 ? (
         <div>
           <DropIn
@@ -94,7 +105,7 @@ const Checkout = ({ products }) => {
               })
             }
           />
-          <button onClick={buy} className='btn btn-success'>
+          <button onClick={buy} className='btn btn-success btn-block'>
             Pay
           </button>
         </div>
@@ -110,9 +121,19 @@ const Checkout = ({ products }) => {
       {error}
     </div>
   );
+
+  const showSuccess = (success) => (
+    <div
+      className='alert alert-info'
+      style={{ display: success ? '' : 'none' }}
+    >
+      Thanks! Your payment was successful!
+    </div>
+  );
   return (
     <div>
       <h2>Total: £{getTotal()}</h2>
+      {showSuccess(data.success)}
       {showError(data.error)}
       {showCheckout()}
     </div>
