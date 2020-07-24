@@ -30,7 +30,7 @@ const Card = ({
 
   const addToCart = () => {
     addItem(product, () => {
-      // setRedirect(true);
+      setRedirect(true);
     });
   };
 

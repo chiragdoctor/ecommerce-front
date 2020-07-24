@@ -1,6 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import Layout from '../core/Layout';
 import { isAuthenticated } from '../auth';
 import { createProduct, getCategories } from './adminAPI';
@@ -98,7 +97,9 @@ const AddProduct = () => {
 
   const showSuccess = () => {
     if (createdProduct) {
-      return <div className='alert alert-info'>{`${createdProduct} is created!`}</div>;
+      return (
+        <div className='alert alert-info'>{`${createdProduct} is created!`}</div>
+      );
     }
   };
 
@@ -114,23 +115,42 @@ const AddProduct = () => {
       <h4>Post Photo</h4>
       <div className='form-group'>
         <label className='btn btn-secondary'>
-          <input onChange={handleChange('photo')} type='file' accept='image/*' />
+          <input
+            onChange={handleChange('photo')}
+            type='file'
+            accept='image/*'
+          />
         </label>
       </div>
 
       <div className='form-group'>
         <label className='text-muted'>Name</label>
-        <input onChange={handleChange('name')} type='text' className='form-control' value={name} />
+        <input
+          onChange={handleChange('name')}
+          type='text'
+          className='form-control'
+          value={name}
+        />
       </div>
 
       <div className='form-group'>
         <label className='text-muted'>Product Description</label>
-        <textarea onChange={handleChange('description')} type='text' className='form-control' value={description} />
+        <textarea
+          onChange={handleChange('description')}
+          type='text'
+          className='form-control'
+          value={description}
+        />
       </div>
 
       <div className='form-group'>
         <label className='text-muted'>Price</label>
-        <input onChange={handleChange('price')} type='number' className='form-control' value={price} />
+        <input
+          onChange={handleChange('price')}
+          type='number'
+          className='form-control'
+          value={price}
+        />
       </div>
 
       <div className='form-group'>
@@ -149,7 +169,12 @@ const AddProduct = () => {
 
       <div className='form-group'>
         <label className='text-muted'>Quantity</label>
-        <input onChange={handleChange('quantity')} type='number' className='form-control' value={quantity} />
+        <input
+          onChange={handleChange('quantity')}
+          type='number'
+          className='form-control'
+          value={quantity}
+        />
       </div>
 
       <div className='form-group'>
@@ -165,7 +190,10 @@ const AddProduct = () => {
   );
 
   return (
-    <Layout title='Dashboard Page' description={`G'Day ${user.name}, ready to add new product?`}>
+    <Layout
+      title='Dashboard Page'
+      description={`G'Day ${user.name}, ready to add new product?`}
+    >
       <div className='row'>
         <div className='col-md-8 offset-md-2'>
           {showLoading()}
