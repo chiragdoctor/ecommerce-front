@@ -3,7 +3,11 @@ import React, { useState, useEffect } from 'react';
 import DropIn from 'braintree-web-drop-in-react';
 import { Link } from 'react-router-dom';
 import { isAuthenticated } from '../auth';
-import { getBraintreeClientToken, processPayment } from './apiCore';
+import {
+  getBraintreeClientToken,
+  processPayment,
+  createOrder,
+} from './apiCore';
 import { emptyCart } from './cartHelpers';
 
 const Checkout = ({ products, setRun = (f) => f, run = undefined }) => {
@@ -13,7 +17,7 @@ const Checkout = ({ products, setRun = (f) => f, run = undefined }) => {
     clientToken: null,
     error: '',
     instance: {},
-    address: '',
+    address: 'London, Middlesex, United Kingdom',
   });
 
   const userId = isAuthenticated() && isAuthenticated().user._id;
@@ -54,6 +58,7 @@ const Checkout = ({ products, setRun = (f) => f, run = undefined }) => {
     );
   };
 
+  let deliveryAddress = data.address;
   const buy = () => {
     setData({ loading: true });
     // send nonce to your server
@@ -71,17 +76,26 @@ const Checkout = ({ products, setRun = (f) => f, run = undefined }) => {
         };
         processPayment(userId, token, paymentData)
           .then((response) => {
-            setData({
-              ...data,
-              success: response.success,
-            });
-            // empty cart
-            emptyCart(() => {
-              console.log('payment success and empty cart');
-              setRun(true);
-              setData({ loading: false });
-            });
             // create order
+            const createOrderData = {
+              products,
+              transactionId: response.transaction.id,
+              amount: response.transaction.amount,
+              address: deliveryAddress,
+            };
+            createOrder(userId, token, createOrderData).then((response) => {
+              // empty cart
+              emptyCart(() => {
+                console.log('payment success and empty cart');
+                setRun(!run);
+                setData({ loading: false });
+              });
+
+              setData({
+                ...data,
+                success: response.success,
+              });
+            });
           })
           .catch((error) => {
             console.log(error);
@@ -96,10 +110,23 @@ const Checkout = ({ products, setRun = (f) => f, run = undefined }) => {
       });
   };
 
+  const handleAddressChange = (event) => {
+    setData({ ...data, address: event.target.value });
+  };
+
   const showDropIn = () => (
     <div onBlur={() => setData({ ...data, error: '' })}>
       {data.clientToken !== null && products.length > 0 ? (
         <div>
+          <div className='form-group'>
+            <label className='text-muted'>Delivery Address: </label>
+            <textarea
+              class='form-control'
+              onChange={handleAddressChange}
+              value={data.address}
+              placeholder='Type your address here...'
+            ></textarea>
+          </div>
           <DropIn
             options={{
               authorization: data.clientToken,
@@ -107,12 +134,7 @@ const Checkout = ({ products, setRun = (f) => f, run = undefined }) => {
                 flow: 'vault',
               },
             }}
-            onInstance={(instance) =>
-              setData({
-                ...data,
-                instance,
-              })
-            }
+            onInstance={(instance) => (data.instance = instance)}
           />
           <button onClick={buy} className='btn btn-success btn-block'>
             Pay
@@ -131,7 +153,8 @@ const Checkout = ({ products, setRun = (f) => f, run = undefined }) => {
     </div>
   );
 
-  const showLoading = (loading) => loading && <h2>Loading...</h2>;
+  const showLoading = (loading) =>
+    loading && <h2 className='text-danger'>Loading...</h2>;
 
   const showSuccess = (success) => (
     <div
