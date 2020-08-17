@@ -79,7 +79,7 @@ const Checkout = ({ products, setRun = (f) => f, run = undefined }) => {
             // create order
             const createOrderData = {
               products,
-              transactionId: response.transaction.id,
+              transaction_id: response.transaction.id,
               amount: response.transaction.amount,
               address: deliveryAddress,
             };
@@ -93,7 +93,7 @@ const Checkout = ({ products, setRun = (f) => f, run = undefined }) => {
 
               setData({
                 ...data,
-                success: response.success,
+                success: true,
               });
             });
           })
@@ -136,7 +136,11 @@ const Checkout = ({ products, setRun = (f) => f, run = undefined }) => {
             }}
             onInstance={(instance) => (data.instance = instance)}
           />
-          <button onClick={buy} className='btn btn-success btn-block'>
+          <button
+            disabled={data.loading}
+            onClick={buy}
+            className='btn btn-success btn-block'
+          >
             Pay
           </button>
         </div>
