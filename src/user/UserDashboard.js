@@ -5,7 +5,7 @@ import { isAuthenticated } from '../auth';
 
 const UserDashboard = () => {
   const {
-    user: { name, email, role },
+    user: { name, email, role, _id },
   } = isAuthenticated();
 
   const userLinks = () => {
@@ -18,7 +18,7 @@ const UserDashboard = () => {
           </Link>
         </li>
         <li className='list-group-item'>
-          <Link className='nav-link' to='/profile/update'>
+          <Link className='nav-link' to={`/profile/${_id}`}>
             Update Profile
           </Link>
         </li>
@@ -33,7 +33,9 @@ const UserDashboard = () => {
         <ul className='list-group'>
           <li className='list-group-item'>{name}</li>
           <li className='list-group-item'>{email}</li>
-          <li className='list-group-item'>{role === 1 ? 'Admin' : 'Registered User'}</li>
+          <li className='list-group-item'>
+            {role === 1 ? 'Admin' : 'Registered User'}
+          </li>
         </ul>
       </div>
     );
@@ -51,7 +53,11 @@ const UserDashboard = () => {
   };
 
   return (
-    <Layout title='Dashboard Page' description={`G'Day ${name}!`} className='container-fluid'>
+    <Layout
+      title='Dashboard Page'
+      description={`G'Day ${name}!`}
+      className='container-fluid'
+    >
       <div className='row'>
         <div className='col-3'>{userLinks()}</div>
         <div className='col-9'>
